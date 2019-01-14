@@ -13,6 +13,7 @@ public class WebSocketController {
 		public String home(@RequestParam(value = "name", defaultValue = "forezp") String name) {
 		 try {
 			WebSocketServer.sendInfo("来自服务端的消息:"+name);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
