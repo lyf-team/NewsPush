@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+<script type="text/javascript">
+//socket = new WebSocket("ws://localhost:9094/starManager/websocket/张三");
+var socket;
+if(typeof(WebSocket) == "undefined") {
+	console.log("您的浏览器不支持WebSocket");
+}else{
+	console.log("您的浏览器支持WebSocket");
+	
+	//实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+	//socket = new WebSocket("ws://localhost:9094/starManager/websocket/张三")
+	socket = new WebSocket("ws://localhost:9094/websocket");
+	//打开事件
+	socket.onopen = function() {
+		console.log("Socket 已打开");
+		//socket.send("这是来自客户端的消息" + location.href + new Date());
+	};
+	//获得消息事件
+	socket.onmessage = function(msg) {
+		console.log(msg.data);
+		$("#content").html($("#content").html()+msg.data+"<br/>")
+		//发现消息进入    调后台获取
+		//getCallingList();
+	};
+	//关闭事件
+	socket.onclose = function() {
+		console.log("Socket已关闭");
+	};
+	//发生了错误事件
+	socket.onerror = function() {
+		alert("Socket发生了错误");
+	}
+	 $(window).unload(function(){
+		  socket.close();
+		});
+
+
+}
+
+
+function sendMessage(){
+	$.get("http://127.0.0.1:9094/push?name="+$("#sendContent").val());
+}
+</script>
+<body>
+<div>
+注意：现在是手动触发消息，真实业务实现：消费一个消息后，直接调用后sendMessage()方法中这个接口去给websocket发送信息，然后websocket去推送给页面
+</div>
+<div>
+<input  id="sendContent" /><button onClick="sendMessage()" >发送消息</button><br/>
+</div>
+<div id="content">
+
+</div>
+
+</body>
+</html>
